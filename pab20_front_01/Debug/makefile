@@ -35,34 +35,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := G071RB_WS2812B_02
+BUILD_ARTIFACT_NAME := pab20_front_01
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-G071RB_WS2812B_02.elf \
+pab20_front_01.elf \
 
 MAP_FILES += \
-G071RB_WS2812B_02.map \
+pab20_front_01.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-G071RB_WS2812B_02.list \
+pab20_front_01.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: G071RB_WS2812B_02.elf secondary-outputs
+main-build: pab20_front_01.elf secondary-outputs
 
 # Tool invocations
-G071RB_WS2812B_02.elf G071RB_WS2812B_02.map: $(OBJS) $(USER_OBJS) C:\Users\GH\git\STM32start\G071RB_WS2812B_02\STM32G071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "G071RB_WS2812B_02.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\GH\git\STM32start\G071RB_WS2812B_02\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="G071RB_WS2812B_02.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+pab20_front_01.elf pab20_front_01.map: $(OBJS) $(USER_OBJS) C:\Users\GH\git\PAB20_proto\pab20_front_01\STM32G071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "pab20_front_01.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\GH\git\PAB20_proto\pab20_front_01\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="pab20_front_01.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -71,14 +71,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-G071RB_WS2812B_02.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "G071RB_WS2812B_02.list"
+pab20_front_01.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "pab20_front_01.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) G071RB_WS2812B_02.elf G071RB_WS2812B_02.list G071RB_WS2812B_02.map default.size.stdout
+	-$(RM) default.size.stdout pab20_front_01.elf pab20_front_01.list pab20_front_01.map
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)

@@ -61,18 +61,26 @@ void Error_Handler(void);
 #define KEY_GPIO_Port GPIOC
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOF
-#define USART2_TX_Pin GPIO_PIN_2
-#define USART2_TX_GPIO_Port GPIOA
-#define USART2_RX_Pin GPIO_PIN_3
-#define USART2_RX_GPIO_Port GPIOA
-#define LED_Pin GPIO_PIN_5
-#define LED_GPIO_Port GPIOA
+#define WAKE_UP_Pin GPIO_PIN_2
+#define WAKE_UP_GPIO_Port GPIOA
+#define POW_ON_Pin GPIO_PIN_3
+#define POW_ON_GPIO_Port GPIOA
+#define ADC_NTC_Pin GPIO_PIN_4
+#define ADC_NTC_GPIO_Port GPIOA
+#define ADC_VIN_Pin GPIO_PIN_5
+#define ADC_VIN_GPIO_Port GPIOA
+#define LED_ON_Pin GPIO_PIN_1
+#define LED_ON_GPIO_Port GPIOB
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
 #define LED_DOUT_Pin GPIO_PIN_3
 #define LED_DOUT_GPIO_Port GPIOB
+#define LED_ON_RS_Pin GPIO_PIN_4
+#define LED_ON_RS_GPIO_Port GPIOB
+#define LED_ON_WW_Pin GPIO_PIN_5
+#define LED_ON_WW_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

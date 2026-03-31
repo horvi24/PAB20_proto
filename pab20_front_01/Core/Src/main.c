@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
 #include "dma.h"
 #include "tim.h"
 #include "usart.h"
@@ -91,8 +92,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_USART2_UART_Init();
   MX_TIM1_Init();
+  MX_ADC1_Init();
+  MX_USART4_UART_Init();
   /* USER CODE BEGIN 2 */
   //setup: https://www.youtube.com/watch?v=TBYatUxH6Ek
   WS28XX_Init(&ws, &htim1, 48, TIM_CHANNEL_2, 7);
@@ -100,8 +102,9 @@ int main(void)
   int j = 0;
   int c = 0;
 
-  printf("\r\r  WS2812B Demo (NimaLTD) 19.03.26\n");
-
+  printf("\r\r  PAB2.0 - Demo 0.01 (31.03.26)\n");
+  LED_WW_ON();
+  LED_RS_OFF();
 
   /* USER CODE END 2 */
 
@@ -138,6 +141,9 @@ int main(void)
 	  		break;
 	  }
 	  if (j++ > 6) j = 0;
+	  printf("\r  %1d\n", j);
+
+
 
 	  for( i = 0; i < 7; i++){
 		  HAL_Delay(100);
@@ -149,6 +155,8 @@ int main(void)
 		  WS28XX_SetPixel_RGBW_565(&ws, i, c, 0);
 		  WS28XX_Update(&ws);
 	  }
+	  LED_RS_TOGGLE();
+	  LED_WW_TOGGLE();
 
   }
   /* USER CODE END 3 */

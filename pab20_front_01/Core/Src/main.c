@@ -95,23 +95,47 @@ int main(void)
   MX_TIM1_Init();
   MX_ADC1_Init();
   MX_USART4_UART_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+
+
   //setup: https://www.youtube.com/watch?v=TBYatUxH6Ek
-  WS28XX_Init(&ws, &htim1, 48, TIM_CHANNEL_2, 7);
+#define LED_NUMBER 6
+#define LED_SIGNAL_POWER 64
+  WS28XX_Init(&ws, &htim1, 48, TIM_CHANNEL_2, LED_NUMBER);
+
+
   int i = 0;
   int j = 0;
   int c = 0;
 
-  printf("\r\r  PAB2.0 - Demo 0.01 (31.03.26)\n");
+  TIM3->CCR4 = 1000;
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+
+  printf("\r\r  PAB2.0 - Demo 0.1.2 (31.03.26)\r\r  \n");
   LED_WW_ON();
   LED_RS_OFF();
-
+  PWR_HOLD_ON();
+  while (PWR_KEY());
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+	  if (PWR_KEY()) {
+		  LED_RS_OFF();
+		  LED_WW_OFF();
+
+		  for( i = 0; i < 7; i++){
+			  WS28XX_SetPixel_RGBW_565(&ws, i, COLOR_RGB565_BLACK, 0);
+		  }
+		  WS28XX_Update(&ws);
+		  printf("\r\r  OFF\n");
+		  PWR_HOLD_OFF();
+		  while(1);
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -140,17 +164,18 @@ int main(void)
 	  	  default:
 	  		break;
 	  }
-	  if (j++ > 6) j = 0;
-	  printf("\r  %1d\n", j);
+	  printf("%1d\n", j);
+	  if(j == 6) printf("\r  \n");
+	  if (j++ > 5) j = 0;
 
+	  WS28XX_SetPixel_RGBW_565(&ws, 0, c, LED_SIGNAL_POWER);
 
-
-	  for( i = 0; i < 7; i++){
+	  for( i = 1; i < 7; i++){
 		  HAL_Delay(100);
 		  WS28XX_SetPixel_RGBW_565(&ws, i, c, 255);
 		  WS28XX_Update(&ws);
 	  }
-	  for( i = 0; i < 7; i++){
+	  for( i = 1; i < 7; i++){
 		  HAL_Delay(100);
 		  WS28XX_SetPixel_RGBW_565(&ws, i, c, 0);
 		  WS28XX_Update(&ws);

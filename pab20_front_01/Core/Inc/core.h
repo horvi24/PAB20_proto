@@ -23,4 +23,9 @@
 #define LED_WW_OFF()        HAL_GPIO_WritePin(LED_ON_WW_GPIO_Port, LED_ON_WW_Pin, GPIO_PIN_SET)
 #define LED_WW_ON()         HAL_GPIO_WritePin(LED_ON_WW_GPIO_Port, LED_ON_WW_Pin, GPIO_PIN_RESET)
 
+#define PWR_HOLD_ON()       HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET)
+#define PWR_HOLD_OFF()      HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET)
+
+#define PWR_KEY()           HAL_GPIO_ReadPin(PWR_KEY_GPIO_Port, PWR_KEY_Pin)
+
 #endif /* INC_CORE_H_ */

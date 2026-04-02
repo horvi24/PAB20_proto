@@ -3,6 +3,10 @@
 
 #include "include.h"
 
+#define TIMER_PERIOD_16BIT  0xFFFF
+#define TIMER_PERIOD_32BIT  0xFFFFFFFF
+
+#define TICK_PERIOD         100 //100ms
 
 
 
@@ -27,5 +31,11 @@
 #define PWR_HOLD_OFF()      HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET)
 
 #define PWR_KEY()           HAL_GPIO_ReadPin(PWR_KEY_GPIO_Port, PWR_KEY_Pin)
+
+void core_tick_init(void);
+uint8_t core_tick(void);
+uint8_t key_pressed_event(void);
+uint16_t change_color(void);
+
 
 #endif /* INC_CORE_H_ */

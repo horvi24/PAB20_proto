@@ -61,8 +61,8 @@ all: main-build
 main-build: pab20_front_01.elf secondary-outputs
 
 # Tool invocations
-pab20_front_01.elf pab20_front_01.map: $(OBJS) $(USER_OBJS) C:\_work_git_new\PAB20_proto\PAB20_proto\pab20_front_01\STM32G071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "pab20_front_01.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\_work_git_new\PAB20_proto\PAB20_proto\pab20_front_01\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="pab20_front_01.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+pab20_front_01.elf pab20_front_01.map: $(OBJS) $(USER_OBJS) C:\Users\GH\git\PAB20_proto\pab20_front_01\STM32G071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "pab20_front_01.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\GH\git\PAB20_proto\pab20_front_01\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="pab20_front_01.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

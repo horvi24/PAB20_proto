@@ -100,74 +100,135 @@ int main(void)
 
 
   //setup: https://www.youtube.com/watch?v=TBYatUxH6Ek
-#define LED_NUMBER 6
-#define LED_SIGNAL_POWER 64
-  WS28XX_Init(&ws, &htim1, 48, TIM_CHANNEL_2, LED_NUMBER);
+  #define LED_RGB_NUMBER 6
+  #define LED_RGB_OFF 0
+  #define LED_RGB_INFO_POWER 0x80
+  #define LED_RGB_FULL_POWER 0xff
 
+  WS28XX_Init(&ws, &htim1, 48, TIM_CHANNEL_2, LED_RGB_NUMBER);
+
+  #define MODE_OFF		0
+  #define MODE_RS_FULL	1
+  #define MODE_WW_FULL	2
+  #define MODE_RS_MID	3
+  #define MODE_WW_MID	4
+  #define MODE_RSWW		5
+
+  #define LED_PWM_100	1000
+  #define LED_PWM_50	500
+  #define LED_PWM_0		0
 
   int i = 0;
-  int j = 0;
-  int c = 0;
+//  int j = 0;
+  uint16_t color = 0;
+  uint8_t mode = MODE_OFF;
+  uint8_t hart_beat = 0;
 
-  TIM3->CCR4 = 1000;
+  TIM3->CCR4 = LED_PWM_0;
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 
-  printf("\r\r  PAB2.0 - Demo 0.1.2 (31.03.26)\r\r  \n");
-  LED_WW_ON();
+  printf("\r\r  PAB2.0 - Demo 0.2.0 (02.04.26)\r\r  \n");
+
+  //mode = MODE_RS_FULL;
+  LED_WW_OFF();
   LED_RS_OFF();
   PWR_HOLD_ON();
   while (PWR_KEY());
+  printf("\rmode: %d\r\n", mode);
+
+  core_tick_init();
+
+  //while(1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
-	  if (PWR_KEY()) {
-		  LED_RS_OFF();
-		  LED_WW_OFF();
-
-		  for( i = 0; i < 7; i++){
-			  WS28XX_SetPixel_RGBW_565(&ws, i, COLOR_RGB565_BLACK, 0);
-		  }
-		  WS28XX_Update(&ws);
-		  printf("\r\r  OFF\n");
-		  PWR_HOLD_OFF();
-		  while(1);
-	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  switch(j){
-	  	  case 0:
-	  		c = COLOR_RGB565_RED;
-	  		break;
-	  	  case 1:
-	  		c = COLOR_RGB565_GREEN;
-	  		break;
-	  	  case 2:
-	  		c = COLOR_RGB565_BLUE;
-	  		break;
-	  	  case 3:
-	  		c = COLOR_RGB565_WHITE;
-	  		break;
-	  	  case 4:
-	  		c = COLOR_RGB565_PURPLE;
-	  		break;
-	  	  case 5:
-	  		c = COLOR_RGB565_CORAL;
-	  		break;
-	  	  case 6:
-	  		c = COLOR_RGB565_GOLD;
-	  		break;
-	  	  default:
-	  		break;
-	  }
-	  printf("%1d\n", j);
-	  if(j == 6) printf("\r  \n");
-	  if (j++ > 5) j = 0;
 
+
+	  // true every 100ms
+	  if (core_tick()){
+		  //read_hardware();
+		  hart_beat = (hart_beat + 1) % 14;
+
+		  if (key_pressed_event() || (mode == 0)) {
+			  //mode++;
+			  mode = (mode + 1) % 6;
+
+			  //printf("\rmode: %d\r\n", mode);
+			  switch(mode){
+			  case MODE_OFF:
+				  printf("\rmode: %d MODE_OFF\r\n", mode);
+				  TIM3->CCR4 = LED_PWM_0;
+				  LED_RS_OFF();
+				  LED_WW_OFF();
+
+				  for( i = 0; i < 7; i++){
+					  WS28XX_SetPixel_RGBW_565(&ws, i, COLOR_RGB565_BLACK, LED_RGB_OFF);
+				  }
+				  WS28XX_Update(&ws);
+
+				  printf("\rOFF\n");
+				  PWR_HOLD_OFF();
+				  while(1);
+
+				  break;
+			  case MODE_RS_FULL:
+				  printf("\rmode: %d MODE_RS_FULL\r\n", mode);
+				  TIM3->CCR4 = LED_PWM_100;
+				  LED_RS_ON();
+				  LED_WW_OFF();
+				  break;
+			  case MODE_WW_FULL:
+				  printf("\rmode: %d MODE_WW_FULL\r\n", mode);
+				  TIM3->CCR4 = LED_PWM_100;
+				  LED_WW_ON();
+				  LED_RS_OFF();
+				  break;
+			  case MODE_RS_MID:
+				  printf("\rmode: %d MODE_RS_MID\r\n", mode);
+				  TIM3->CCR4 = LED_PWM_50;
+				  LED_RS_ON();
+				  LED_WW_OFF();
+				  break;
+			  case MODE_WW_MID:
+				  printf("\rmode: %d MODE_WW_MID\r\n", mode);
+				  TIM3->CCR4 = LED_PWM_50;
+				  LED_WW_ON();
+				  LED_RS_OFF();
+				  break;
+			  case MODE_RSWW:
+				  printf("\rmode: %d MODE_RSWW\r\n", mode);
+				  TIM3->CCR4 = LED_PWM_100;
+				  LED_RS_ON();
+				  LED_WW_ON();
+				  break;
+			  }
+		  }
+
+		  if(hart_beat == 0){
+			  color = change_color();
+			  WS28XX_SetPixel_RGBW_565(&ws, 0, color, LED_RGB_INFO_POWER);
+		  }
+		  else if((1 <= hart_beat) && (hart_beat <= 7)){
+			  WS28XX_SetPixel_RGBW_565(&ws, hart_beat, color, LED_RGB_FULL_POWER);
+		  }
+		  else if((8 <= hart_beat) && (hart_beat <= 14)){
+			  WS28XX_SetPixel_RGBW_565(&ws, hart_beat - 7, color, LED_RGB_OFF);
+		  }
+		  WS28XX_Update(&ws);
+	  }
+
+
+	  //LED_RS_TOGGLE();
+	  //LED_WW_TOGGLE();
+
+
+/*
 	  WS28XX_SetPixel_RGBW_565(&ws, 0, c, LED_SIGNAL_POWER);
 
 	  for( i = 1; i < 7; i++){
@@ -180,8 +241,7 @@ int main(void)
 		  WS28XX_SetPixel_RGBW_565(&ws, i, c, 0);
 		  WS28XX_Update(&ws);
 	  }
-	  LED_RS_TOGGLE();
-	  LED_WW_TOGGLE();
+*/
 
   }
   /* USER CODE END 3 */

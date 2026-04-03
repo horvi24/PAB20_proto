@@ -105,29 +105,34 @@ int main(void)
   #define LED_RGB_INFO_POWER 0x80
   #define LED_RGB_FULL_POWER 0xff
 
-  WS28XX_Init(&ws, &htim1, 48, TIM_CHANNEL_2, LED_RGB_NUMBER);
-
   #define MODE_OFF		0
   #define MODE_RS_FULL	1
   #define MODE_WW_FULL	2
   #define MODE_RS_MID	3
   #define MODE_WW_MID	4
   #define MODE_RSWW		5
+  #define MODE_RGB		6
 
   #define LED_PWM_100	1000
   #define LED_PWM_50	500
   #define LED_PWM_0		0
 
+  extern uint16_t color_cnt;
+
   int i = 0;
-//  int j = 0;
   uint16_t color = 0;
   uint8_t mode = MODE_OFF;
   uint8_t hart_beat = 0;
 
+  WS28XX_Init(&ws, &htim1, 48, TIM_CHANNEL_2, LED_RGB_NUMBER);
+  WS28XX_SetPixel_RGBW_565(&ws, 0, color, LED_RGB_OFF);
+
   TIM3->CCR4 = LED_PWM_0;
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 
-  printf("\r\r  PAB2.0 - Demo 0.2.0 (02.04.26)\r\r  \n");
+  WS28XX_Update(&ws);
+
+  printf("\r\r  PAB2.0 - Demo 0.2.2 (03.04.26)\r\r  \n");
 
   //mode = MODE_RS_FULL;
   LED_WW_OFF();
@@ -157,7 +162,7 @@ int main(void)
 
 		  if (key_pressed_event() || (mode == 0)) {
 			  //mode++;
-			  mode = (mode + 1) % 6;
+			  mode = (mode + 1) % 7;
 
 			  //printf("\rmode: %d\r\n", mode);
 			  switch(mode){
@@ -166,10 +171,12 @@ int main(void)
 				  TIM3->CCR4 = LED_PWM_0;
 				  LED_RS_OFF();
 				  LED_WW_OFF();
-
+				  WS28XX_SetPixel_RGBW_565(&ws, 0, color, LED_RGB_OFF);
+				  /*
 				  for( i = 0; i < 7; i++){
 					  WS28XX_SetPixel_RGBW_565(&ws, i, COLOR_RGB565_BLACK, LED_RGB_OFF);
 				  }
+				  */
 				  WS28XX_Update(&ws);
 
 				  printf("\rOFF\n");
@@ -207,19 +214,36 @@ int main(void)
 				  LED_RS_ON();
 				  LED_WW_ON();
 				  break;
+			  case MODE_RGB:
+				  printf("\rmode: %d MODE_RGB\r\n", mode);
+				  TIM3->CCR4 = LED_PWM_0;
+				  LED_RS_OFF();
+				  LED_WW_OFF();
+				  hart_beat = 0;
+				  color_cnt = 0;
+				  break;
 			  }
 		  }
 
-		  if(hart_beat == 0){
-			  color = change_color();
-			  WS28XX_SetPixel_RGBW_565(&ws, 0, color, LED_RGB_INFO_POWER);
+		  if(mode != MODE_RGB){
+			  /*
+			  if(hart_beat == 0){
+				  color = change_color();
+				  WS28XX_SetPixel_RGBW_565(&ws, 0, color, LED_RGB_INFO_POWER);
+			  }
+			  else if((1 <= hart_beat) && (hart_beat <= 7)){
+				  WS28XX_SetPixel_RGBW_565(&ws, hart_beat, color, LED_RGB_FULL_POWER);
+			  }
+			  else if((8 <= hart_beat) && (hart_beat <= 14)){
+				  WS28XX_SetPixel_RGBW_565(&ws, hart_beat - 7, color, LED_RGB_OFF);
+			  }
+			  */
 		  }
-		  else if((1 <= hart_beat) && (hart_beat <= 7)){
-			  WS28XX_SetPixel_RGBW_565(&ws, hart_beat, color, LED_RGB_FULL_POWER);
+		  else if (hart_beat == 0){
+			  color = change_color_rgb();
+			  WS28XX_SetPixel_RGBW_565(&ws, 0, color, LED_RGB_FULL_POWER);
 		  }
-		  else if((8 <= hart_beat) && (hart_beat <= 14)){
-			  WS28XX_SetPixel_RGBW_565(&ws, hart_beat - 7, color, LED_RGB_OFF);
-		  }
+
 		  WS28XX_Update(&ws);
 	  }
 

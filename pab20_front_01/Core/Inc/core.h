@@ -36,6 +36,7 @@ void core_tick_init(void);
 uint8_t core_tick(void);
 uint8_t key_pressed_event(void);
 uint16_t change_color(void);
+uint16_t change_color_rgb(void);
 
 
 #endif /* INC_CORE_H_ */

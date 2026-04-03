@@ -39,6 +39,29 @@ uint8_t key_pressed_event(void)
     return event;
 }
 
+uint16_t change_color_rgb(void){
+	uint16_t c = 0;
+
+	switch(color_cnt){
+	case 0:
+		c = COLOR_RGB565_RED;
+		break;
+	case 1:
+		c = COLOR_RGB565_GREEN;
+		break;
+	case 2:
+		c = COLOR_RGB565_BLUE;
+		break;
+	default:
+		break;
+	}
+	printf("%1d\n", color_cnt);
+	if(color_cnt == 2) printf("\r\n");
+	color_cnt = (color_cnt + 1) % 3;
+	//if (color_cnt++ > 2) color_cnt = 0;
+	return c;
+}
+
 uint16_t change_color(void){
 	uint16_t c = 0;
 
@@ -70,6 +93,7 @@ uint16_t change_color(void){
 
 	printf("%1d\n", color_cnt);
 	if(color_cnt == 6) printf("\r\n");
-	if (color_cnt++ > 5) color_cnt = 0;
+	color_cnt = (color_cnt + 1) % 7;
+	//if (color_cnt++ > 5) color_cnt = 0;
 	return c;
 }

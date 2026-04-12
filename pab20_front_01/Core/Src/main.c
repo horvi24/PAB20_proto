@@ -132,7 +132,7 @@ int main(void)
 
   WS28XX_Update(&ws);
 
-  printf("\r\r  PAB2.0 - Demo 0.2.2 (03.04.26)\r\r  \n");
+  printf("\r\r  PAB2.0 - Demo 0.2.3 (10.04.26)\r\r  \n");
 
   //mode = MODE_RS_FULL;
   LED_WW_OFF();
